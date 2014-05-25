@@ -58,11 +58,15 @@ set (CMAKE_MODULE_PATH
 
 # Try to get information about using /lib/ or /lib64/
 get_property(LIB64 GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS)
-if (${LIB64} STREQUAL "TRUE")
-	set(LIBSUFFIX 64)
+if (LIB64)
+	if (${LIB64} STREQUAL "TRUE")
+		set(LIBSUFFIX 64)
+	else()
+		set(LIBSUFFIX "")
+	endif()
 else()
 	set(LIBSUFFIX "")
-endif()
+endif(LIB64)
 
 # Check OpenSSL library
 if (VERSE_OPENSSL)
