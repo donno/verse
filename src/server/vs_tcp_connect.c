@@ -210,7 +210,11 @@ end:
 	}
 
 	/* Was udp thread created? */
-	if(vsession->udp_thread != 0 ) {
+#ifdef WIN32
+	if(vsession->udp_thread.p != 0 ) {
+#else
+	if(vsession->udp_thread != 0) {
+#endif
 		/* Wait for UDP thread (this is blocking operation) */
 		v_print_log(VRS_PRINT_DEBUG_MSG, "Waiting for join with UDP thread ...\n");
 		if(pthread_join(vsession->udp_thread, &udp_thread_result) != 0) {
