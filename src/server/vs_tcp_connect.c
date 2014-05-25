@@ -724,6 +724,17 @@ static int vs_init_io_ctx(struct IO_CTX *io_ctx,
 		return -1;
 	}
 
+#ifdef WIN32
+	/* Set up the Winsock */
+	WORD wVersionRequested = MAKEWORD(2, 2);
+	WSADATA wsaData;
+	int err = WSAStartup(wVersionRequested, &wsaData);
+	if (err != 0) {
+		if (is_log_level(VRS_PRINT_ERROR))  v_print_log(VRS_PRINT_ERROR, "WSAStartup(): Settig up Winsock failed.\n");
+		return -1;
+	}
+#endif
+
 	/* "Address" of server */
 	if(io_ctx->host_addr.ip_ver == IPV4) {		/* IPv4 */
 

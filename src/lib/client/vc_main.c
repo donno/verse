@@ -174,6 +174,18 @@ int vc_init_ctx(struct VC_CTX *vc_ctx)
 	SSL_load_error_strings();
 	OpenSSL_add_all_algorithms();
 
+#ifdef WIN32
+	/* Set up the Winsock */
+	WORD wVersionRequested = MAKEWORD(2, 2);
+	WSADATA wsaData;
+	int err = WSAStartup(wVersionRequested, &wsaData);
+	if (err != 0) {
+		v_print_log(VRS_PRINT_ERROR, "Setting up Winsock failed.\n");
+		ERR_print_errors_fp(v_log_file());
+		return -1;
+	}
+#endif
+
 	/* Set up SSL context for TLS */
 	if( (vc_ctx->tls_ctx = SSL_CTX_new(TLSv1_client_method())) == NULL ) {
 		v_print_log(VRS_PRINT_ERROR, "Setting up SSL_CTX for TLS failed.\n");
