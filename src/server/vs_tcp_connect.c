@@ -417,7 +417,11 @@ static int vs_new_stream_conn(struct vContext *C, void *(*conn_loop)(void*))
 #endif
 		}
 		/* TODO: Fix this */
+#ifdef WIN32
+		Sleep(100);
+#else
 		sleep(1);
+#endif
 	}
 
 	return 1;
@@ -547,7 +551,11 @@ int vs_main_listen_loop(VS_CTX *vs_ctx)
 		if(tmp==0) {
 			vs_ctx->state = SERVER_STATE_CLOSED;
 		} else {
+#ifdef WIN32
+			Sleep(100);
+#else
 			sleep(1);
+#endif
 		}
 	}
 
