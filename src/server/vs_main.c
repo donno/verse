@@ -30,7 +30,12 @@
 #include <Windows.h>
 #define SEM_FAILED ((sem_t *) -1)
 typedef unsigned int uid_t;
-uid_t geteuid();
+extern uid_t geteuid();
+extern int optind;
+extern char *optarg;
+extern int getopt(int nargc, char * const nargv [], const char *ostr);
+extern sem_t *sem_open_win(const char *name, int oflag, mode_t mode, unsigned int value);
+extern int sem_close_win(sem_t *sem);
 #else
 #include <unistd.h>
 #include <sys/stat.h>
@@ -649,7 +654,11 @@ int main(int argc, char *argv[])
 		/* Initialize data semaphore. The semaphore has to be named, because
 		 * Mac OS X (and probably other BSD like UNIXes) doesn't support unnamed
 		 * semaphores */
-		if( (vs_ctx.data.sem = sem_open(vs_ctx.data.sem_name, O_CREAT, 0644, 1)) == SEM_FAILED) {
+#ifdef WIN32
+		if ((vs_ctx.data.sem = sem_open_win(vs_ctx.data.sem_name, O_CREAT, 0644, 1)) == SEM_FAILED) {
+#else
+		if ((vs_ctx.data.sem = sem_open(vs_ctx.data.sem_name, O_CREAT, 0644, 1)) == SEM_FAILED) {
+#endif
 			v_print_log(VRS_PRINT_ERROR, "sem_open(%s): %s\n",
 					vs_ctx.data.sem_name, strerror(errno));
 			free(vs_ctx.data.sem_name);
@@ -730,11 +739,19 @@ int main(int argc, char *argv[])
 	}
 
 	/* Try to close named semaphore */
-	if(sem_close(vs_ctx.data.sem) == -1) {
+#ifdef WIN32
+	if(sem_close_win(vs_ctx.data.sem) == -1) {
+		v_print_log(VRS_PRINT_ERROR, "sem_close_win(): %s\n", strerror(errno));
+	}
+#else
+	if (sem_close(vs_ctx.data.sem) == -1) {
 		v_print_log(VRS_PRINT_ERROR, "sem_close(): %s\n", strerror(errno));
 	}
 #endif
 
+#endif
+
+#ifndef WIN32
 	/* Try to unlink named semaphore */
 	if(vs_ctx.data.sem != NULL &&
 			vs_ctx.data.sem_name != NULL &&
@@ -742,6 +759,7 @@ int main(int argc, char *argv[])
 	{
 		v_print_log(VRS_PRINT_ERROR, "sem_unlink(): %s\n", strerror(errno));
 	}
+#endif
 
 	if(vs_ctx.data.sem_name) free(vs_ctx.data.sem_name);
 

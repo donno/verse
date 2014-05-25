@@ -223,3 +223,14 @@ EXPORTS
   CTX_r_message_set
   CTX_s_message
   CTX_s_message_set
+
+; The following are exported purely for Windows compatibility.
+  usleep
+  strndup
+  geteuid
+  optarg
+  optind
+  getopt
+  getpass
+  sem_open_win
+  sem_close_win

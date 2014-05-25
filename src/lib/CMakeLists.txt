@@ -69,6 +69,10 @@ set (libverse_src
 include_directories (../../include)
 
 
+#if (MSVC)
+	set (libverse_src ${libverse_src} common/v_windows_compat.c)
+#endif (MSVC)
+
 # Make build flags compiler specific for libverse.so
 if (CMAKE_COMPILER_IS_GNUCC)
     set (CMAKE_C_FLAGS "-D_REETRANT -fPIC -Wall -Wextra -pedantic -Wno-long-long")
