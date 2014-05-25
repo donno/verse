@@ -96,6 +96,12 @@ if (OPENSSL_FOUND)
 	target_link_libraries (verse_shared_lib ${OPENSSL_LIBRARIES} )
 endif (OPENSSL_FOUND)
 
+if (MSVC)
+	target_link_libraries(verse_shared_lib ws2_32 ${PTHREADS_LIBRARY})
+	set_target_properties(
+		verse_shared_lib
+		PROPERTIES LINK_FLAGS "/DEF:${CMAKE_CURRENT_SOURCE_DIR}/verse.def")
+endif (MSVC)
 
 # The rule to install shared library used by Verse server and Verse clients
 install (TARGETS verse_shared_lib

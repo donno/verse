@@ -76,6 +76,11 @@ if (VERSE_OPENSSL)
 
 endif (VERSE_OPENSSL)
 
+if (MSVC)
+	find_library(PTHREADS_LIBRARY Threads)
+	add_definitions(/D "_CRT_SECURE_NO_WARNINGS" /D "_CRT_NONSTDC_NO_DEPRECATE")
+	add_definitions(/D "WIN32_LEAN_AND_MEAN")
+endif (MSVC)
 
 # Check iniparser library
 if (VERSE_INIPARSER)

@@ -1,0 +1,225 @@
+; Module defintion for verse.
+
+LIBRARY  verse
+EXPORTS
+  vrs_send_connect_request
+  vrs_send_user_authenticate
+  vrs_register_receive_user_authenticate
+  vrs_register_receive_connect_accept
+  vrs_send_connect_terminate
+  vrs_register_receive_connect_terminate
+  vrs_callback_update
+  vrs_set_debug_level
+  vrs_strerror
+  vrs_send_fps
+  vrs_send_node_create
+  vrs_register_receive_node_create
+  vrs_send_node_destroy
+  vrs_register_receive_node_destroy
+  vrs_send_node_subscribe
+  vrs_register_receive_node_subscribe
+  vrs_send_node_unsubscribe
+  vrs_register_receive_node_unsubscribe
+  vrs_send_node_owner
+  vrs_register_receive_node_owner
+  vrs_send_node_perm
+  vrs_register_receive_node_perm
+  vrs_send_node_lock
+  vrs_register_receive_node_lock
+  vrs_send_node_unlock
+  vrs_register_receive_node_unlock
+  vrs_send_node_link
+  vrs_register_receive_node_link
+  vrs_send_node_prio
+  vrs_send_taggroup_create
+  vrs_register_receive_taggroup_create
+  vrs_send_taggroup_destroy
+  vrs_register_receive_taggroup_destroy
+  vrs_send_taggroup_subscribe
+  vrs_register_receive_taggroup_subscribe
+  vrs_send_taggroup_unsubscribe
+  vrs_register_receive_taggroup_unsubscribe
+  vrs_send_tag_create
+  vrs_register_receive_tag_create
+  vrs_send_tag_destroy
+  vrs_register_receive_tag_destroy
+  vrs_send_tag_set_value
+  vrs_register_receive_tag_set_value
+  vrs_send_layer_create
+  vrs_register_receive_layer_create
+  vrs_send_layer_destroy
+  vrs_register_receive_layer_destroy
+  vrs_send_layer_subscribe
+  vrs_register_receive_layer_subscribe
+  vrs_send_layer_unsubscribe
+  vrs_register_receive_layer_unsubscribe
+  vrs_send_layer_set_value
+  vrs_register_receive_layer_set_value
+  vrs_send_layer_unset_value
+  vrs_register_receive_layer_unset_value
+  vrs_set_client_info
+
+  v_tcp_read
+  v_tcp_write
+  
+  v_url_init
+  v_url_parse
+  v_url_clear
+  
+  v_ack_nak_history_clear
+  
+  v_init_session
+
+  v_packet_history_destroy
+
+  v_STREAM_handle_messages
+  v_STREAM_pack_message
+
+  v_list_free
+  v_list_add_head
+  v_list_add_tail
+  v_list_rem_item
+  v_list_free_item
+  v_insert_item
+  v_list_insert_item_after
+  v_list_count_items
+  v_array_find_item
+  v_array_remove_item
+  v_array_add_item
+  v_array_free
+  v_array_init
+  v_log_file
+  v_log_level
+  is_log_level
+  gettimeofday
+  v_hash_array_init
+  v_hash_array_remove_item
+  v_print_log
+  v_print_log_simple
+  v_hash_array_find_item
+  v_hash_array_remove_item
+  v_hash_array_add_item
+  v_hash_array_count_items
+  v_hash_array_destroy
+  v_hash_array_init
+  v_out_queue_push_tail
+  v_tag_create_create
+  v_tag_destroy_create
+  v_tag_set_create
+  v_taggroup_create_create
+  v_taggroup_destroy_create
+  v_taggroup_subscribe_create
+  v_taggroup_subscribe_create
+  v_taggroup_unsubscribe_create
+  v_exponential_backoff
+  v_receive_packet
+  v_send_packet
+  v_unpack_packet_header
+  v_pack_packet_header
+  v_unpack_message_header
+  v_pack_message_header
+  v_print_packet_header
+  v_print_send_message
+  v_print_receive_message
+  v_print_send_packet
+  v_print_receive_packet
+  v_print_addr_port
+  v_print_addr
+  v_compare_addr
+  v_compare_addr_and_port
+    
+  v_node_create_create
+  v_node_destroy_create
+  v_node_subscribe_create
+  v_node_unsubscribe_create
+  v_node_prio_create
+  v_node_link_create
+  v_node_perm_create
+  v_node_owner_create
+  v_node_lock_create
+  v_node_unlock_create
+  
+  v_destroy_session
+  v_init_print_log
+  v_layer_create_create
+  v_layer_destroy_create
+  v_layer_set_value_create
+  v_layer_unset_value_create
+  v_cmd_destroy
+  v_in_queue_cmd_count
+  v_in_queue_pop
+  v_out_queue_init
+  v_conn_stream_init
+  v_in_queue_init
+  
+  v_ack_nak_history_add_cmd
+  
+  v_conn_dgram_handle_sys_cmds
+  v_conn_dgram_cmp_state
+  v_conn_dgram_set_state
+  v_conn_dgram_init
+  v_conn_dgram_destroy
+  v_conn_dgram_clear
+  v_conn_stream_set_state
+  v_conn_stream_init
+  v_conn_stream_destroy
+  
+  v_add_negotiate_cmd
+  v_print_user_auth_success
+  v_raw_unpack_user_auth_success
+  v_raw_pack_user_auth_success
+
+  v_print_user_auth_failure
+  v_raw_unpack_user_auth_failure
+  v_raw_pack_user_auth_failure
+
+  v_print_user_auth_request
+  v_raw_unpack_user_auth_request
+  v_raw_pack_user_auth_request
+
+  v_print_negotiate_cmd
+  v_raw_unpack_negotiate_cmd
+  v_raw_pack_negotiate_cmd
+
+  v_print_ack_nak_cmd
+  v_raw_unpack_ack_nak_cmd
+  v_raw_pack_ack_nak_cmd
+
+  v_print_packet_sys_cmds
+  v_print_message_sys_cmds
+
+  v_unpack_packet_system_commands
+  v_unpack_message_system_commands
+
+  v_pack_dgram_system_commands
+  v_pack_stream_system_commands
+
+  handle_packet_in_OPEN_state
+  send_packet_in_OPEN_CLOSEREQ_state
+
+  CTX_server_ctx
+  CTX_server_ctx_set
+
+  CTX_client_ctx
+  CTX_client_ctx_set
+
+  CTX_io_ctx
+  CTX_io_ctx_set
+
+  CTX_current_session
+  CTX_current_session_set
+
+  CTX_current_stream_conn
+  CTX_current_stream_conn_set
+
+  CTX_current_dgram_conn
+  CTX_current_dgram_conn_set
+
+  CTX_r_packet
+  CTX_r_packet_set
+  CTX_s_packet
+  CTX_s_packet_set
+  CTX_r_message
+  CTX_r_message_set
+  CTX_s_message
+  CTX_s_message_set
