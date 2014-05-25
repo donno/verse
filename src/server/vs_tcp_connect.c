@@ -394,7 +394,11 @@ static int vs_new_stream_conn(struct vContext *C, void *(*conn_loop)(void*))
 				return 0;
 			}
 			/* Close connection (no more free session slots) */
+#ifdef WIN32
+			closesocket(tmp_sockfd);
+#else
 			close(tmp_sockfd);
+#endif
 		} else if(io_ctx->host_addr.ip_ver == IPV6) {
 			/* Prepare IP6 variables for TCP handshake */
 			struct sockaddr_in6 client_addr6;
@@ -406,7 +410,11 @@ static int vs_new_stream_conn(struct vContext *C, void *(*conn_loop)(void*))
 				return 0;
 			}
 			/* Close connection (no more free session slots) */
+#ifdef WIN32
+			closesocket(tmp_sockfd);
+#else
 			close(tmp_sockfd);
+#endif
 		}
 		/* TODO: Fix this */
 		sleep(1);

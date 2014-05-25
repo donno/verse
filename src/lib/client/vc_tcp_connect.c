@@ -799,8 +799,11 @@ void vc_destroy_stream_conn(struct VStreamConn *stream_conn)
 	stream_conn->io_ctx.bio = NULL;
 #endif
 
+#ifdef WIN32
+	closesocket(stream_conn->io_ctx.sockfd);
+#else
 	close(stream_conn->io_ctx.sockfd);
-
+#endif
 }
 
 #ifdef WITH_OPENSSL
@@ -1096,7 +1099,11 @@ struct VStreamConn *vc_create_client_stream_conn(const struct VC_CTX *ctx,
 			 * receive packets only from this address. */
 			if(connect(sockfd, rp->ai_addr, rp->ai_addrlen) != -1)
 				break;
+#ifdef WIN32
+			closesocket(sockfd);
+#else
 			close(sockfd);
+#endif
 			sockfd = -1;
 		}
 	}
@@ -1113,7 +1120,11 @@ struct VStreamConn *vc_create_client_stream_conn(const struct VC_CTX *ctx,
 		v_print_log(VRS_PRINT_ERROR,
 				"malloc(): %s\n", strerror(errno));
 		freeaddrinfo(result);
+#ifdef WIN32
+		closesocket(sockfd);
+#else
 		close(sockfd);
+#endif
 		*error = VRS_CONN_TERM_ERROR;
 		return NULL;
 	}
@@ -1163,7 +1174,11 @@ struct VStreamConn *vc_create_client_stream_conn(const struct VC_CTX *ctx,
 			(void *)&stream_conn->socket_buffer_size, &int_size) != 0 )
 	{
 		v_print_log(VRS_PRINT_ERROR, "getsockopt(): %s\n", strerror(errno));
+#ifdef WIN32
+		closesocket(stream_conn->io_ctx.sockfd);
+#else
 		close(stream_conn->io_ctx.sockfd);
+#endif
 		free(stream_conn);
 		*error = VRS_CONN_TERM_ERROR;
 		return NULL;
@@ -1196,7 +1211,11 @@ struct VStreamConn *vc_create_client_stream_conn(const struct VC_CTX *ctx,
 	if( (stream_conn->io_ctx.ssl=SSL_new(ctx->tls_ctx)) == NULL) {
 		v_print_log(VRS_PRINT_ERROR, "Setting up SSL failed.\n");
 		ERR_print_errors_fp(v_log_file());
+#ifdef WIN32
+		closesocket(stream_conn->io_ctx.sockfd);
+#else
 		close(stream_conn->io_ctx.sockfd);
+#endif
 		free(stream_conn);
 		*error = VRS_CONN_TERM_ERROR;
 		return NULL;
@@ -1208,7 +1227,11 @@ struct VStreamConn *vc_create_client_stream_conn(const struct VC_CTX *ctx,
 				"Failed binding socket descriptor and SSL.\n");
 		ERR_print_errors_fp(v_log_file());
 		SSL_free(stream_conn->io_ctx.ssl);
+#ifdef WIN32
+		closesocket(stream_conn->io_ctx.sockfd);
+#else
 		close(stream_conn->io_ctx.sockfd);
+#endif
 		free(stream_conn);
 		*error = VRS_CONN_TERM_ERROR;
 		return NULL;
@@ -1221,7 +1244,11 @@ struct VStreamConn *vc_create_client_stream_conn(const struct VC_CTX *ctx,
 		v_print_log(VRS_PRINT_ERROR, "SSL connection failed\n");
 		ERR_print_errors_fp(v_log_file());
 		SSL_free(stream_conn->io_ctx.ssl);
+#ifdef WIN32
+		closesocket(stream_conn->io_ctx.sockfd);
+#else
 		close(stream_conn->io_ctx.sockfd);
+#endif
 		free(stream_conn);
 		*error = VRS_CONN_TERM_ERROR;
 		return NULL;

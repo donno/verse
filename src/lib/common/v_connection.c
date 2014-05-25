@@ -236,7 +236,11 @@ void v_conn_dgram_destroy(struct VDgramConn *dgram_conn)
 
 	v_ack_nak_history_clear(&dgram_conn->ack_nak);
 
+#ifdef WIN32
+	closesocket(dgram_conn->io_ctx.sockfd);
+#else
 	close(dgram_conn->io_ctx.sockfd);
+#endif
 }
 
 /* Clear datagram connection */
@@ -257,7 +261,11 @@ void v_conn_dgram_clear(struct VDgramConn *dgram_conn)
 	}
 #endif
 
+#ifdef WIN32
+	closesocket(dgram_conn->io_ctx.sockfd);
+#else
 	close(dgram_conn->io_ctx.sockfd);
+#endif
 
 	v_conn_dgram_init(dgram_conn);
 }

@@ -133,7 +133,11 @@ int vs_TLS_handshake(struct vContext *C)
 		SSL_free(stream_conn->io_ctx.ssl);
 		stream_conn->io_ctx.ssl = NULL;
 		stream_conn->io_ctx.bio = NULL;
+#ifdef WIN32
+		closesocket(io_ctx->sockfd);
+#else
 		close(io_ctx->sockfd);
+#endif
 		return 0;
 	}
 
@@ -144,7 +148,11 @@ int vs_TLS_handshake(struct vContext *C)
 		SSL_free(stream_conn->io_ctx.ssl);
 		stream_conn->io_ctx.ssl = NULL;
 		stream_conn->io_ctx.bio = NULL;
+#ifdef WIN32
+		closesocket(io_ctx->sockfd);
+#else
 		close(io_ctx->sockfd);
+#endif
 		return 0;
 	}
 
@@ -158,7 +166,11 @@ int vs_TLS_handshake(struct vContext *C)
 		SSL_free(stream_conn->io_ctx.ssl);
 		stream_conn->io_ctx.ssl = NULL;
 		stream_conn->io_ctx.bio = NULL;
+#ifdef WIN32
+		closesocket(io_ctx->sockfd);
+#else
 		close(io_ctx->sockfd);
+#endif
 		return 0;
 	}
 
@@ -217,7 +229,11 @@ void vs_CLOSING(struct vContext *C)
 	if(stream_conn->io_ctx.ssl != NULL) vs_TLS_teardown(C);
 #endif
 
+#ifdef WIN32
+	closesocket(stream_conn->io_ctx.sockfd);
+#else
 	close(stream_conn->io_ctx.sockfd);
+#endif
 }
 
 

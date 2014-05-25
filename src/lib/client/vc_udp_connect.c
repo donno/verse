@@ -1203,7 +1203,11 @@ struct VDgramConn *vc_create_client_dgram_conn(struct vContext *C)
 			 * receive packets only from this address. */
 			if(connect(sockfd, rp->ai_addr, rp->ai_addrlen) != -1)
 				break;
+#ifdef WIN32
+			closesocket(sockfd);
+#else
 			close(sockfd);
+#endif
 			sockfd = -1;
 		}
 	}
@@ -1228,7 +1232,11 @@ struct VDgramConn *vc_create_client_dgram_conn(struct vContext *C)
 		v_print_log(VRS_PRINT_ERROR, "calloc(): %s\n", strerror(errno));
 		freeaddrinfo(result);
 		if(sockfd != -1) {
+#ifdef WIN32
+			closesocket(sockfd);
+#else
 			close(sockfd);
+#endif
 		}
 		goto end;
 	}
@@ -1272,7 +1280,11 @@ struct VDgramConn *vc_create_client_dgram_conn(struct vContext *C)
 		v_print_log(VRS_PRINT_ERROR, "setsockopt(): %s\n", strerror(errno));
 		free(dgram_conn);
 		if(sockfd != -1) {
+#ifdef WIN32
+			closesocket(sockfd);
+#else
 			close(sockfd);
+#endif
 		}
 		dgram_conn = NULL;
 		goto end;
