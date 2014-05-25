@@ -42,9 +42,11 @@
 #endif
 
 #include <sys/types.h>
+#ifndef WIN32
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#endif
 
 #include <errno.h>
 #include <limits.h>

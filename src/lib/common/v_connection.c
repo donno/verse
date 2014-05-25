@@ -38,7 +38,9 @@
 #include <string.h>
 #include <time.h>
 #include <pthread.h>
+#ifndef WIN32
 #include <unistd.h>
+#endif
 #ifdef WITH_OPENSSL
 #ifdef __APPLE__
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"

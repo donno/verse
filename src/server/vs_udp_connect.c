@@ -30,15 +30,19 @@
 #endif
 #endif
 
-#include <sys/types.h>
+#ifdef WIN32
+#include <WinSock2.h>
+typedef USHORT in_port_t;
+#else
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <sys/time.h>
+#include <unistd.h>
+#endif
 
 #include <signal.h>
-
 #include <errno.h>
-#include <sys/time.h>
 #include <time.h>
 
 #include <stdio.h>
@@ -46,7 +50,6 @@
 #include <string.h>
 #include <limits.h>
 #include <fcntl.h>
-#include <unistd.h>
 
 #include "vs_main.h"
 #include "vs_udp_connect.h"

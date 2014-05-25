@@ -41,14 +41,18 @@
 #endif
 
 #include <sys/types.h>
+#ifdef WIN32
+#include <WinSock2.h>
+#else
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <unistd.h>
+#endif
 
 #include <errno.h>
 #include <fcntl.h>
-#include <unistd.h>
 
 #include "vc_main.h"
 #include "vc_udp_connect.h"

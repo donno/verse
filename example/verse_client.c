@@ -39,7 +39,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef WIN32
+extern int optind;
+extern char *optarg;
+extern int getopt(int nargc, char * const nargv [], const char *ostr);
+#else
 #include <unistd.h>
+#endif
 #include <signal.h>
 #include <string.h>
 #include <stdint.h>

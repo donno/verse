@@ -40,7 +40,12 @@
 #include <openssl/ssl.h>
 #endif
 
+#ifdef WIN32
+#include <Winsock2.h>
+#include <WS2tcpip.h>
+#else
 #include <netinet/in.h>
+#endif
 #include <limits.h>
 
 #include "v_commands.h"

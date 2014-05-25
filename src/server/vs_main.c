@@ -25,10 +25,17 @@
 #include <stdio.h>
 #include <errno.h>
 #include <signal.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/stat.h>
 #include <semaphore.h>
+#ifdef WIN32
+#include <Windows.h>
+#define SEM_FAILED ((sem_t *) -1)
+typedef unsigned int uid_t;
+uid_t geteuid();
+#else
+#include <unistd.h>
+#include <sys/stat.h>
+#endif
+#include <fcntl.h>
 
 #include "verse_types.h"
 

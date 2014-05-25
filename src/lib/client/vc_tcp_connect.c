@@ -43,12 +43,17 @@
 #endif
 
 #include <sys/types.h>
+#ifdef WIN32
+#include <WinSock2.h>
+extern void usleep(unsigned __int64 ticks);
+#else
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-
 #include <unistd.h>
+#endif
+
 #include <string.h>
 #include <fcntl.h>
 #include <errno.h>

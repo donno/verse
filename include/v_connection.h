@@ -38,7 +38,9 @@
 
 #include <openssl/ssl.h>
 
+#ifndef WIN32
 #include <sys/time.h>
+#endif
 #include <pthread.h>
 
 #include "v_network.h"

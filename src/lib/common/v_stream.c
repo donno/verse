@@ -35,7 +35,9 @@
 
 #include <stdio.h>
 #include <errno.h>
+#ifndef WIN32
 #include <sys/ioctl.h>
+#endif
 #ifdef __linux__
 #include <linux/sockios.h>
 #endif

@@ -31,14 +31,17 @@
 #endif
 #endif
 
+#ifndef WIN32
 #include <sys/socket.h>
-#include <sys/types.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
+#include <unistd.h>
+#endif
+
+#include <sys/types.h>
 #include <errno.h>
 
-#include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
 #include <pthread.h>

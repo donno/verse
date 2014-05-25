@@ -42,6 +42,16 @@
 #include "verse_types.h"
 #include "v_commands.h"
 
+#ifdef WIN32
+/* CC_NONE is no Curve Control in GDI. */
+#undef CC_NONE
+#ifdef  _WIN64
+typedef __int64    ssize_t;
+#else
+typedef int ssize_t;
+#endif
+#endif
+
 /* System Commands (IDs are in range 0-31). These commands can not be added to the
  * packet directly by client application*/
 #define MIN_SYS_CMD_ID			0
