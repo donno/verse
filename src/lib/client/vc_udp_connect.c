@@ -1240,6 +1240,20 @@ struct VDgramConn *vc_create_client_dgram_conn(struct vContext *C)
 	dgram_conn->io_ctx.sockfd = sockfd;
 
 	/* Set socket non-blocking */
+#ifdef WIN32
+	/* O_NONBLOCK flag for fcntl() maps to FIONBIO on ioctlsocket */
+	long ioctlsocket_ret = 1;
+	if ((ioctlsocket(dgram_conn->io_ctx.sockfd, FIONBIO, &ioctlsocket_ret)) == -1) {
+		if(is_log_level(VRS_PRINT_ERROR)) v_print_log(VRS_PRINT_ERROR, "ioctlsocket(): %s\n", strerror(errno));
+		free(dgram_conn);
+		dgram_conn = NULL;
+		if (sockfd != -1) {
+			closesocket(sockfd);
+		}
+		freeaddrinfo(result);
+		return NULL;
+	}
+#else
 	flag = fcntl(dgram_conn->io_ctx.sockfd, F_GETFL, 0);
 	if( (fcntl(dgram_conn->io_ctx.sockfd, F_SETFL, flag | O_NONBLOCK)) == -1) {
 		v_print_log(VRS_PRINT_ERROR, "fcntl(): %s\n", strerror(errno));
@@ -1251,7 +1265,7 @@ struct VDgramConn *vc_create_client_dgram_conn(struct vContext *C)
 		freeaddrinfo(result);
 		goto end;
 	}
-
+#endif
 	/* Set socket to reuse address */
 	flag = 1;
 	if( setsockopt(dgram_conn->io_ctx.sockfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag)) == -1) {

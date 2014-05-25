@@ -1269,11 +1269,20 @@ static int vs_init_dgram_ctx(struct vContext *C)
 		}
 
 		/* Set socket non-blocking */
+#ifdef WIN32
+		/* O_NONBLOCK flag for fcntl() maps to FIONBIO on ioctlsocket */
+		long ioctlsocket_ret = 1;
+		if ((ioctlsocket(dgram_conn->io_ctx.sockfd, FIONBIO, &ioctlsocket_ret)) == -1) {
+			if (is_log_level(VRS_PRINT_ERROR)) v_print_log(VRS_PRINT_ERROR, "ioctlsocket(): %s\n", strerror(errno));
+			return -1;
+		}
+#else
 		flag = fcntl(dgram_conn->io_ctx.sockfd, F_GETFL, 0);
 		if( (fcntl(dgram_conn->io_ctx.sockfd, F_SETFL, flag | O_NONBLOCK)) == -1) {
 			v_print_log(VRS_PRINT_ERROR, "fcntl(): %s\n", strerror(errno));
 			return -1;
 		}
+#endif
 
 		/* Set socket to reuse addresses */
 		flag = 1;
@@ -1313,11 +1322,19 @@ static int vs_init_dgram_ctx(struct vContext *C)
 		}
 
 		/* Set socket non-blocking */
+#ifdef WIN32
+		long ioctlsocket_ret = 1;
+		if ((ioctlsocket(dgram_conn->io_ctx.sockfd, FIONBIO, &ioctlsocket_ret)) == -1) {
+			if (is_log_level(VRS_PRINT_ERROR)) v_print_log(VRS_PRINT_ERROR, "ioctlsocket(): %s\n", strerror(errno));
+			return -1;
+		}
+#else
 		flag = fcntl(dgram_conn->io_ctx.sockfd, F_GETFL, 0);
 		if( (fcntl(dgram_conn->io_ctx.sockfd, F_SETFL, flag | O_NONBLOCK)) == -1) {
 			v_print_log(VRS_PRINT_ERROR, "fcntl(): %s\n", strerror(errno));
 			return -1;
 		}
+#endif
 
 		/* Set socket to reuse addresses */
 		flag = 1;

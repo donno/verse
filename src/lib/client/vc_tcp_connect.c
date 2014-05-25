@@ -133,11 +133,19 @@ static int vc_STREAM_OPEN_loop(struct vContext *C)
 	int flag, ret, error;
 
 	/* Set socket non-blocking */
+#ifdef WIN32
+	long ioctlsocket_ret = 1;
+	if ((ioctlsocket(io_ctx->sockfd, FIONBIO, &ioctlsocket_ret)) == -1) {
+		if (is_log_level(VRS_PRINT_ERROR)) v_print_log(VRS_PRINT_ERROR, "ioctlsocket(): %s\n", strerror(errno));
+		return -1;
+	}
+#else
 	flag = fcntl(io_ctx->sockfd, F_GETFL, 0);
 	if( (fcntl(io_ctx->sockfd, F_SETFL, flag | O_NONBLOCK)) == -1) {
 		if(is_log_level(VRS_PRINT_ERROR)) v_print_log(VRS_PRINT_ERROR, "fcntl(): %s\n", strerror(errno));
 		return -1;
 	}
+#endif
 
 	/* Put connect accept command to queue -> call callback function */
 	conn_accept = v_Connect_Accept_create(vsession->avatar_id, vsession->user_id);
@@ -187,11 +195,19 @@ static int vc_STREAM_OPEN_loop(struct vContext *C)
 end:
 
 	/* Set socket blocking again */
+#ifdef WIN32
+	ioctlsocket_ret = 0;
+	if ((ioctlsocket(io_ctx->sockfd, FIONBIO, &ioctlsocket_ret)) == -1) {
+		if (is_log_level(VRS_PRINT_ERROR)) v_print_log(VRS_PRINT_ERROR, "ioctlsocket(): %s\n", strerror(errno));
+		return -1;
+	}
+#else
 	flag = fcntl(io_ctx->sockfd, F_GETFL, 0);
 	if( (fcntl(io_ctx->sockfd, F_SETFL, flag & ~O_NONBLOCK)) == -1) {
 		if(is_log_level(VRS_PRINT_ERROR)) v_print_log(VRS_PRINT_ERROR, "fcntl(): %s\n", strerror(errno));
 		return -1;
 	}
+#endif
 
 	return 1;
 }
@@ -1154,6 +1170,17 @@ struct VStreamConn *vc_create_client_stream_conn(const struct VC_CTX *ctx,
 	}
 
 	/* Make sure socket is blocking */
+#ifdef WIN32
+	/* O_NONBLOCK flag for fcntl() maps to FIONBIO on ioctlsocket */
+	long ioctlsocket_ret = 0;
+	if ((ioctlsocket(stream_conn->io_ctx.sockfd, FIONBIO, &ioctlsocket_ret)) == -1) {
+		if (is_log_level(VRS_PRINT_ERROR)) v_print_log(VRS_PRINT_ERROR, "fcntl(): %s\n", strerror(errno));
+		closesocket(stream_conn->io_ctx.sockfd);
+		free(stream_conn);
+		*error = VRS_CONN_TERM_ERROR;
+		return NULL;
+	}
+#else
 	flag = fcntl(stream_conn->io_ctx.sockfd, F_GETFL, 0);
 	if( (fcntl(stream_conn->io_ctx.sockfd, F_SETFL, flag & ~O_NONBLOCK)) == -1) {
 		v_print_log(VRS_PRINT_ERROR, "fcntl(): %s\n", strerror(errno));
@@ -1162,6 +1189,7 @@ struct VStreamConn *vc_create_client_stream_conn(const struct VC_CTX *ctx,
 		*error = VRS_CONN_TERM_ERROR;
 		return NULL;
 	}
+#endif
 
 #ifdef WITH_OPENSSL
 	/* Set up SSL */

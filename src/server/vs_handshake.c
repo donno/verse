@@ -112,11 +112,19 @@ int vs_TLS_handshake(struct vContext *C)
 	int flag, ret;
 
 	/* Make sure socket is blocking */
+#ifdef WIN32
+	long ioctlsocket_ret = 0;
+	if ((ioctlsocket(io_ctx->sockfd, FIONBIO, &ioctlsocket_ret)) == -1) {
+		if (is_log_level(VRS_PRINT_ERROR)) v_print_log(VRS_PRINT_ERROR, "ioctlsocket(): %s\n", strerror(errno));
+		return -1;
+	}
+#else
 	flag = fcntl(stream_conn->io_ctx.sockfd, F_GETFL, 0);
 	if( (fcntl(stream_conn->io_ctx.sockfd, F_SETFL, flag & ~O_NONBLOCK)) == -1) {
 		if(is_log_level(VRS_PRINT_ERROR)) v_print_log(VRS_PRINT_ERROR, "fcntl(): %s\n", strerror(errno));
 		return 0;
 	}
+#endif
 
 	/* Set up SSL */
 	if( (stream_conn->io_ctx.ssl = SSL_new(vs_ctx->tls_ctx)) == NULL) {
@@ -228,11 +236,19 @@ int vs_STREAM_OPEN_tcp_loop(struct vContext *C)
 	int flag, ret, error;
 
 	/* Set socket non-blocking */
+#ifdef WIN32
+	long ioctlsocket_ret = 1;
+	if ((ioctlsocket(io_ctx->sockfd, FIONBIO, &ioctlsocket_ret)) == -1) {
+		if (is_log_level(VRS_PRINT_ERROR)) v_print_log(VRS_PRINT_ERROR, "ioctlsocket(): %s\n", strerror(errno));
+		return -1;
+	}
+#else
 	flag = fcntl(io_ctx->sockfd, F_GETFL, 0);
 	if( (fcntl(io_ctx->sockfd, F_SETFL, flag | O_NONBLOCK)) == -1) {
 		if(is_log_level(VRS_PRINT_ERROR)) v_print_log(VRS_PRINT_ERROR, "fcntl(): %s\n", strerror(errno));
 		return -1;
 	}
+#endif
 
 	/* "Never ending" loop */
 	while(1)
@@ -279,11 +295,19 @@ int vs_STREAM_OPEN_tcp_loop(struct vContext *C)
 end:
 
 	/* Set socket blocking again */
+#ifdef WIN32
+	ioctlsocket_ret = 0;
+	if ((ioctlsocket(io_ctx->sockfd, FIONBIO, &ioctlsocket_ret)) == -1) {
+		if (is_log_level(VRS_PRINT_ERROR)) v_print_log(VRS_PRINT_ERROR, "ioctlsocket(): %s\n", strerror(errno));
+		return -1;
+	}
+#else
 	flag = fcntl(io_ctx->sockfd, F_GETFL, 0);
 	if( (fcntl(io_ctx->sockfd, F_SETFL, flag & ~O_NONBLOCK)) == -1) {
 		if(is_log_level(VRS_PRINT_ERROR)) v_print_log(VRS_PRINT_ERROR, "fcntl(): %s\n", strerror(errno));
 		return -1;
 	}
+#endif
 
 	return 0;
 }
